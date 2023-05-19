@@ -1,25 +1,47 @@
-import { html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { LitElement, html } from "lit";
+import { customElement, query, state } from "lit/decorators.js";
 import { TailwindElement } from "../shared/tailwind.element";
-import style from "./test.component.css?inline";
+import style from "./template.post.css?inline";
+import { parseMarkdown } from "../utilities/get_md";
 
-const showdown = require("showdown");
+@customElement("post-title")
+class PostTitle extends LitElement {
+  @state() private title: string = "";
 
+  async connectedCallback() {
+    super.connectedCallback();
+    const { title } = await parseMarkdown("/2023/may/19.md");
+    this.title = title;
+  }
 
-// fetch the blog post text from a markdown file in the public folder
-fetch("")
+  // firstUpdated() {}
 
+  render() {
+    return html`${this.title}`;
+  }
+}
+@customElement("content-body")
+class ContentBody extends LitElement {
+  @state() private content: string = "";
+
+  async connectedCallback() {
+    super.connectedCallback();
+    const { content } = await parseMarkdown("/2023/may/19.md");
+    this.content = content;
+  }
+  render() {
+    return html`${this.content}`;
+  }
+}
 @customElement("blog-post")
 export class BlogPost extends TailwindElement(style) {
-  @property()
-  text?: string = "";
-
   render() {
     return html`
     <article class="max-w-2xl px-6 py-24 mx-auto space-y-12 dark:bg-gray-800 dark:text-gray-50">
     <div class="w-full mx-auto space-y-4 text-center">
-      <p class="text-xs font-semibold tracking-wider uppercase">#TailwindCSS</p>
-      <h1 class="text-4xl font-bold leading-tight md:text-5xl">Interdum et malesuada fames ac ante ipsum primis in faucibus?</h1>
+      <p class="text-xs font-semibold tracking-wider uppercase">solid principles</p>
+      <div class="text-4xl font-bold leading-tight md:text-5xl"><post-title></post-title>
+       </div>
       <p class="text-sm dark:text-gray-400">by
         <a rel="noopener noreferrer" href="#" target="_blank" class="underline dark:text-violet-400">
           <span itemprop="name">Caleb Barzee</span>
@@ -28,11 +50,11 @@ export class BlogPost extends TailwindElement(style) {
       </p>
     </div>
     <div class="dark:text-gray-100">
-      <p>Insert the actual text content here...</p>
+      <content-body></content-body>
     </div>
     <div class="pt-12 border-t dark:border-gray-700">
       <div class="flex flex-col space-y-4 md:space-y-0 md:space-x-6 md:flex-row">
-        <img src="https://source.unsplash.com/75x75/?portrait" alt="" class="self-center flex-shrink-0 w-24 h-24 border rounded-full md:justify-self-start dark:bg-gray-500 dark:border-gray-700">
+        <img src="/assets/caleb_pro_portrait_final.jpg" alt="Profile image of Caleb Barzee" class="self-center flex-shrink-0 w-24 h-auto border rounded-full md:justify-self-start dark:bg-gray-500 dark:border-gray-700">
         <div class="flex flex-col">
           <h4 class="text-lg font-semibold">Caleb Barzee</h4>
           <p class="dark:text-gray-400">Passionate software engineer with a love for all things creative and a curious mind. When I'm not immersed in coding, you can find me exploring the open road on my bicycle, kicking around a soccer ball, getting my hands messy with pottery, experimenting with new recipes in the kitchen, or delving into the world of design. I believe in the power of technology to create meaningful experiences and I'm constantly seeking new ways to combine my technical skills with my diverse interests. Let's collaborate and make something extraordinary together!</p>
