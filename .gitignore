@@ -1,0 +1,5 @@
+*.DS_Store
+*.css.map
+pnpm-lock.yaml
+dist
+node_modules
